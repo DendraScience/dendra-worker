@@ -1,0 +1,29 @@
+{
+  "databases": {
+    "nedb": {
+      "cache": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "/home/node/cache"
+      },
+      "state": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "/home/node/state"
+      }
+    }
+  },
+  "port": 8080,
+  "tasks": {
+    "cache_grooming": {
+      "docLimit": 100,
+      "retentionMinutes": 60,
+      "timerSeconds": [300, 420]
+    },
+    "worker": null
+  }
+}

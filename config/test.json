@@ -1,0 +1,21 @@
+{
+  "connections": {
+    "testService": {
+      "url": "http://localhost:3033"
+    }
+  },
+  "tasks": {
+    "cache_grooming": null,
+    "worker": {
+      "taskMachines": {
+        "test": {
+          "moduleId": "../dist/server/lib/testTasks",
+          "props": {
+            "hello": "world"
+          }
+        }
+      },
+      "timerSeconds": 5
+    }
+  }
+}

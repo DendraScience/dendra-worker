@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "idField": "id",
+    "local": {},
+    "token": {
+      "secret": "ThYncCxLbjhin7YZBtZgda7nm0KSeT4rM0UsvpCnJXPA6sTVq6NKvsDoHjzyjkMKnB4gKDqsUx8Gg7mYsRbV9Q=="
+    }
+  },
+  "connections": {},
+  "databases": {
+    "nedb": {
+      "cache": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "../.cache"
+      },
+      "state": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "../.state"
+      }
+    }
+  },
+  "host": "localhost",
+  "port": 3034,
+  "public": "../dist/public/",
+  "services": {},
+  "tasks": {
+    "cache_grooming": {
+      "docLimit": 20,
+      "retentionMinutes": 60,
+      "timerSeconds": [10, 15]
+    },
+    "worker": {
+      "taskMachines": {
+        "test": {
+          "moduleId": "../dist/server/lib/testTasks",
+          "props": {
+            "hello": "world"
+          }
+        }
+      },
+      "timerSeconds": [10, 15]
+    }
+  }
+}
