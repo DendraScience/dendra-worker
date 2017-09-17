@@ -34,9 +34,9 @@
   },
   "dependencies": {
     "@dendra-science/api-hooks-common": "0.0.1",
-    "@dendra-science/task-machine": "0.0.1",
+    "@dendra-science/task-machine": "0.0.2",
     "babel-runtime": "^6.26.0",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.1",
     "compression": "^1.7.0",
     "cors": "^2.8.4",
     "express": "^4.15.4",
@@ -66,7 +66,7 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.3"
   },
   "optionalDependencies": {
     "fsevents": "^1.0.0"

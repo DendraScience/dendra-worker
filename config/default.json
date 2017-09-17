@@ -38,7 +38,7 @@
     "worker": {
       "taskMachines": {
         "test": {
-          "moduleId": "../dist/server/lib/testTasks",
+          "module": "../dist/server/lib/testTasks",
           "props": {
             "hello": "world"
           }

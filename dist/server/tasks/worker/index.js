@@ -19,13 +19,15 @@ module.exports = function () {
       // Create TaskMachine instances based on config
       Object.keys(taskMachines).forEach(key => {
         const taskMachine = taskMachines[key];
-        const tasksModule = require(taskMachine.moduleId);
+        const tasksModule = require(taskMachine.module);
+        const tasksMember = tasksModule[taskMachine.member || 'default'] || tasksModule;
 
         taskMachine.machine = new TaskMachine({
           $app: app,
-          _id: key,
-          props: Object.assign({}, taskMachine.props)
-        }, tasksModule.default || tasksModule, Object.assign({
+          key: key,
+          props: Object.assign({}, taskMachine.props),
+          state: {}
+        }, tasksMember, Object.assign({
           interval: -1
         }, taskMachine.options));
       });
@@ -48,6 +50,8 @@ module.exports = function () {
 
           Object.keys(taskMachines).forEach(key => {
             const taskMachine = taskMachines[key];
+            const currentDocId = `taskMachine-${key}-current`;
+            const defaultDocId = `taskMachine-${key}-default`;
 
             if (taskMachine.isProcessing) {
               app.logger.info(`Task [worker]: Skipping machine '${key}'`);
@@ -56,28 +60,33 @@ module.exports = function () {
 
             taskMachine.isProcessing = true;
 
-            docService.get(key).then(doc => {
-              return doc;
+            app.logger.info(`Task [worker]: Getting current state for machine '${key}'`);
+            docService.get(currentDocId).catch(err => {
+              if (err.code !== 404) throw err;
+
+              app.logger.info(`Task [worker]: Getting default state for machine '${key}'`);
+              return docService.get(defaultDocId).then(doc => {
+                return docService.create(Object.assign(doc, {
+                  _id: currentDocId
+                }));
+              });
             }).catch(err => {
               if (err.code !== 404) throw err;
 
-              app.logger.info(`Task [worker]: Creating state for machine '${key}'`);
-
-              return docService.create(Object.assign({}, taskMachine.machine.model.state, {
-                _id: key
+              app.logger.info(`Task [worker]: Using existing state for machine '${key}'`);
+              return docService.create(Object.assign(taskMachine.machine.model.state, {
+                _id: currentDocId
               }));
             }).then(doc => {
               // Restore state before running
               taskMachine.machine.model.state = doc;
 
               app.logger.info(`Task [worker]: Starting machine '${key}'`);
-
               return taskMachine.machine.clear().start();
             }).then(success => {
-              app.logger.info(`Task [worker]: Updating state for machine '${key}'`);
-
               // Preserve state after running
-              return docService.update(key, taskMachine.machine.model.state);
+              app.logger.info(`Task [worker]: Updating current state for machine '${key}'`);
+              return docService.update(currentDocId, taskMachine.machine.model.state);
             }).catch(handleError).then(() => {
               taskMachine.isProcessing = false;
             });
