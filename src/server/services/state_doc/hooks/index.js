@@ -11,18 +11,12 @@ exports.before = {
 
   // get: [],
 
-  create: [
-    hooks.disallow('rest'),
-    apiHooks.timestamp()
-  ],
+  create: apiHooks.timestamp(),
+  update: apiHooks.timestamp(),
 
-  update: [
-    hooks.disallow('rest'),
-    apiHooks.timestamp()
-  ],
+  patch: hooks.disallow('rest')
 
-  patch: hooks.disallow('rest'),
-  remove: hooks.disallow('rest')
+  // remove: []
 }
 
 exports.after = {
