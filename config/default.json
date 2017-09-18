@@ -34,17 +34,6 @@
       "docLimit": 20,
       "retentionMinutes": 60,
       "timerSeconds": [10, 15]
-    },
-    "worker": {
-      "taskMachines": {
-        "test": {
-          "module": "../dist/server/lib/testTasks",
-          "props": {
-            "hello": "world"
-          }
-        }
-      },
-      "timerSeconds": [10, 15]
     }
   }
 }
