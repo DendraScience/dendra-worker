@@ -1,3 +1,4 @@
+const moment = require('moment')
 const {configTimerSeconds} = require('../../lib/utils')
 const {TaskMachine} = require('@dendra-science/task-machine')
 
@@ -20,6 +21,7 @@ module.exports = (function () {
         const tasksModule = require(taskMachine.module)
         const tasksMember = tasksModule[taskMachine.member || 'default'] || tasksModule
 
+        taskMachine.finishedAt = moment()
         taskMachine.machine = new TaskMachine({
           $app: app,
           key: key,
@@ -50,8 +52,9 @@ module.exports = (function () {
             const taskMachine = taskMachines[key]
             const currentDocId = `taskMachine-${key}-current`
             const defaultDocId = `taskMachine-${key}-default`
+            const afterSeconds = taskMachine.afterSeconds || 600
 
-            if (taskMachine.isProcessing) {
+            if (taskMachine.isProcessing || (moment().diff(taskMachine.finishedAt, 's') < afterSeconds)) {
               app.logger.info(`Task [worker]: Skipping machine '${key}'`)
               return
             }
@@ -87,6 +90,7 @@ module.exports = (function () {
               return docService.update(currentDocId, taskMachine.machine.model.state)
             }).catch(handleError).then(() => {
               taskMachine.isProcessing = false
+              taskMachine.finishedAt = moment()
             })
           })
 

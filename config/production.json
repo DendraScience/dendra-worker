@@ -23,7 +23,6 @@
       "docLimit": 100,
       "retentionMinutes": 60,
       "timerSeconds": [300, 420]
-    },
-    "worker": null
+    }
   }
 }

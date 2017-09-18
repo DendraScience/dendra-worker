@@ -9,6 +9,7 @@
     "worker": {
       "taskMachines": {
         "test": {
+          "afterSeconds": 2,
           "module": "../dist/server/lib/testTasks",
           "props": {
             "hello": "world"
