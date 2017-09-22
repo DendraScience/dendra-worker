@@ -28,7 +28,6 @@ module.exports = function () {
           $app: app,
           key: key,
           props: Object.assign({}, taskMachine.props),
-          scratch: {},
           state: {}
         }, tasksMember, taskMachine.options);
       });
@@ -82,6 +81,7 @@ module.exports = function () {
             }).then(doc => {
               // Restore state before running
               taskMachine.machine.model.state = doc;
+              taskMachine.machine.model.scratch = {};
 
               app.logger.info(`Task [worker]: Starting machine '${key}'`);
               return taskMachine.machine.clear().start();
@@ -90,7 +90,7 @@ module.exports = function () {
               app.logger.info(`Task [worker]: Updating current state for machine '${key}'`);
               return docService.update(currentDocId, taskMachine.machine.model.state);
             }).catch(handleError).then(() => {
-              taskMachine.machine.model.scratch = {};
+              delete taskMachine.machine.model.scratch;
               taskMachine.isProcessing = false;
               taskMachine.finishedAt = moment();
             });
