@@ -15,8 +15,10 @@ exports.before = {
 
 exports.after = {
   // all: [],
-  // find: [],
-  // get: [],
+
+  find: (0, _feathersHooksCommon.discard)('$app', 'scratch'),
+  get: (0, _feathersHooksCommon.discard)('$app', 'scratch')
+
   // create: [],
   // update: [],
   // patch: [],

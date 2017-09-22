@@ -26,10 +26,9 @@ module.exports = (function () {
           $app: app,
           key: key,
           props: Object.assign({}, taskMachine.props),
+          scratch: {},
           state: {}
-        }, tasksMember, Object.assign({
-          interval: -1
-        }, taskMachine.options))
+        }, tasksMember, taskMachine.options)
       })
 
       app.set('taskMachines', taskMachines)
@@ -89,6 +88,7 @@ module.exports = (function () {
               app.logger.info(`Task [worker]: Updating current state for machine '${key}'`)
               return docService.update(currentDocId, taskMachine.machine.model.state)
             }).catch(handleError).then(() => {
+              taskMachine.machine.model.scratch = {}
               taskMachine.isProcessing = false
               taskMachine.finishedAt = moment()
             })

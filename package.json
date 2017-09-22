@@ -1,6 +1,6 @@
 {
   "name": "dendra-worker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Dendra worker service for recurring tasks.",
   "license": "BSD-2-Clause-FreeBSD",
   "author": "J. Scott Smith <scott@newleafsolutionsinc.com>",
@@ -44,7 +44,7 @@
     "feathers-configuration": "^0.4.1",
     "feathers-errors": "^2.9.1",
     "feathers-hooks": "^2.0.2",
-    "feathers-hooks-common": "^3.7.1",
+    "feathers-hooks-common": "^3.7.3",
     "feathers-nedb": "^2.6.2",
     "feathers-rest": "^1.8.0",
     "feathers-socketio": "^2.0.0",
@@ -52,7 +52,7 @@
     "moment": "^2.18.1",
     "nedb": "^1.8.0",
     "pug": "^2.0.0-rc.3",
-    "request": "^2.81.0",
+    "request": "^2.82.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
@@ -60,7 +60,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-es2015-node6": "^0.4.0",
     "chai": "^4.1.1",
-    "eslint": "^4.4.1",
+    "eslint": "^4.7.2",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
