@@ -1,12 +1,7 @@
 'use strict';
 
-var _feathersErrors = require('feathers-errors');
-
-var _hooks = require('./hooks');
-
-var _hooks2 = _interopRequireDefault(_hooks);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const hooks = require('./hooks');
+const { errors } = require('feathers-errors');
 
 class Service {
   constructor() {
@@ -37,7 +32,7 @@ class Service {
     const taskMachine = this._taskMachines()[id];
     return new Promise((resolve, reject) => {
       if (!taskMachine) {
-        reject(new _feathersErrors.errors.NotFound(`No record found for id '${id}'`));
+        reject(new errors.NotFound(`No record found for id '${id}'`));
       } else {
         resolve(Object.assign({}, taskMachine.machine.model));
       }
@@ -54,7 +49,7 @@ module.exports = function () {
     // Get the wrapped service object, bind hooks
     const modelService = app.service('/models');
 
-    modelService.before(_hooks2.default.before);
-    modelService.after(_hooks2.default.after);
+    modelService.before(hooks.before);
+    modelService.after(hooks.after);
   };
 }();

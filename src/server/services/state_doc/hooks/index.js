@@ -1,6 +1,5 @@
 const apiHooks = require('@dendra-science/api-hooks-common')
-// const globalHooks = require('../../../hooks')
-const hooks = require('feathers-hooks-common')
+const {disallow} = require('feathers-hooks-common')
 
 exports.before = {
   // all: [],
@@ -11,10 +10,23 @@ exports.before = {
 
   // get: [],
 
-  create: apiHooks.timestamp(),
-  update: apiHooks.timestamp(),
+  create: [
+    apiHooks.timestamp()
+  ],
 
-  patch: hooks.disallow('rest')
+  update: [
+    apiHooks.timestamp(),
+
+    (hook) => {
+      // TODO: Optimize with find/$select to return fewer fields?
+      return hook.app.service('/state/docs').get(hook.id).then(doc => {
+        hook.data.created_at = doc.created_at
+        return hook
+      })
+    }
+  ],
+
+  patch: disallow('rest')
 
   // remove: []
 }

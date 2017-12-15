@@ -1,5 +1,5 @@
-import {errors} from 'feathers-errors'
-import hooks from './hooks'
+const hooks = require('./hooks')
+const {errors} = require('feathers-errors')
 
 class Service {
   constructor () {

@@ -1,6 +1,6 @@
 {
   "name": "dendra-worker",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Dendra worker service for recurring tasks.",
   "license": "BSD-2-Clause-FreeBSD",
   "author": "J. Scott Smith <scott@newleafsolutionsinc.com>",
@@ -17,6 +17,7 @@
     "clean-server": "rm -rf dist/server/*",
     "copy-views": "cp -R src/server/views dist/server",
     "empty-cache": "rm -f .cache/*.db",
+    "empty-state": "rm -f .state/*.db",
     "lint": "eslint src",
     "lint-server": "eslint src/server",
     "lint-test": "eslint test",
@@ -25,7 +26,7 @@
     "start:dev": "NODE_ENV=development npm start",
     "start:prod": "NODE_ENV=production npm start",
     "test": "npm run test-server",
-    "test-server": "npm run lint-test-server && NODE_ENV=test mocha test/server --recursive --use_strict",
+    "test-server": "npm run empty-cache && npm run empty-state && npm run lint-test-server && NODE_ENV=test mocha test/server --recursive --use_strict",
     "test-server:build": "npm run build-server && npm run test-server",
     "test-server:watch": "chokidar --initial 'src/server/**/*.js' 'test/server/**/*.js' -c 'npm run test-server:build'"
   },

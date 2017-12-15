@@ -1,6 +1,5 @@
 const apiHooks = require('@dendra-science/api-hooks-common')
-// const globalHooks = require('../../../hooks')
-const hooks = require('feathers-hooks-common')
+const {disallow} = require('feathers-hooks-common')
 
 exports.before = {
   // all: [],
@@ -12,17 +11,17 @@ exports.before = {
   // get: [],
 
   create: [
-    hooks.disallow('rest'),
+    disallow('rest'),
     apiHooks.timestamp()
   ],
 
   update: [
-    hooks.disallow('rest'),
+    disallow('rest'),
     apiHooks.timestamp()
   ],
 
-  patch: hooks.disallow('rest'),
-  remove: hooks.disallow('rest')
+  patch: disallow('rest'),
+  remove: disallow('rest')
 }
 
 exports.after = {
