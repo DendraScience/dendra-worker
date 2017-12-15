@@ -27,6 +27,7 @@ module.exports = function () {
         taskMachine.machine = new TaskMachine({
           $app: app,
           key: key,
+          private: {},
           props: Object.assign({}, taskMachine.props),
           state: {}
         }, tasksMember, taskMachine.options);

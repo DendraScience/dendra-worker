@@ -1,4 +1,4 @@
-import {disallow, discard} from 'feathers-hooks-common'
+import {discard, disallow} from 'feathers-hooks-common'
 
 exports.before = {
   // all: [],
@@ -12,11 +12,10 @@ exports.before = {
 }
 
 exports.after = {
-  // all: [],
+  all: discard('$app', 'private', 'props', 'scratch')
 
-  find: discard('$app', 'scratch'),
-  get: discard('$app', 'scratch')
-
+  // find: [],
+  // get: [],
   // create: [],
   // update: [],
   // patch: [],

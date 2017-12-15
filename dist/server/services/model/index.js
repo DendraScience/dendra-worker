@@ -25,7 +25,7 @@ class Service {
   find(params, callback) {
     const taskMachines = this._taskMachines();
     const values = Object.keys(taskMachines).map(key => {
-      return taskMachines[key].machine.model;
+      return Object.assign({}, taskMachines[key].machine.model);
     });
     callback(null, {
       total: values.length,
@@ -39,7 +39,7 @@ class Service {
       if (!taskMachine) {
         reject(new _feathersErrors.errors.NotFound(`No record found for id '${id}'`));
       } else {
-        resolve(taskMachine.machine.model);
+        resolve(Object.assign({}, taskMachine.machine.model));
       }
     });
   }

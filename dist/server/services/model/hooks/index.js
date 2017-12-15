@@ -14,11 +14,10 @@ exports.before = {
 };
 
 exports.after = {
-  // all: [],
+  all: (0, _feathersHooksCommon.discard)('$app', 'private', 'props', 'scratch')
 
-  find: (0, _feathersHooksCommon.discard)('$app', 'scratch'),
-  get: (0, _feathersHooksCommon.discard)('$app', 'scratch')
-
+  // find: [],
+  // get: [],
   // create: [],
   // update: [],
   // patch: [],
