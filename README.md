@@ -5,7 +5,7 @@ A generic worker service for performing recurring tasks, such as data loading.
 
 ## Instructions
 
-1. Be sure you have Node version 6.11.x. If you’re using nvm, you may need to `nvm use 6.11`.
+1. Be sure you have Node version 8.7.x. If you’re using nvm, you may need to `nvm use 8.7`.
 
 2. Clone this repo.
 
@@ -20,8 +20,8 @@ A generic worker service for performing recurring tasks, such as data loading.
 
 1. Make this project directory the current directory, i.e. `cd dendra-worker`.
 
-2. Build the project `docker build -t dendro:dendra-worker .`.
+2. Build the project `docker build -t dendra:dendra-worker .`.
 
-3. Tag the desired image, e.g. `docker tag f0ec409b5194 dendro/dendra-worker:latest`.
+3. Tag the desired image, e.g. `docker tag f0ec409b5194 dendra/dendra-worker:latest`.
 
-4. Push it via `docker push dendro/dendra-worker`.
+4. Push it via `docker push dendra/dendra-worker`.

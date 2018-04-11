@@ -11,14 +11,18 @@ Object.defineProperty(exports, "__esModule", {
  * @module lib/testTasks
  */
 
+const moment = require('moment');
+
 exports.default = {
   a: {
     clear(m) {
       m.value = null;
     },
+
     guard(m) {
       return !m.value;
     },
+
     execute(m) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -26,9 +30,18 @@ exports.default = {
         }, 200);
       });
     },
-    afterExecute(m, res) {
+
+    afterExecute(m, res, { logger }) {
+      logger.info('Logging info');
+      logger.info('Logging info w/ meta', { extra: 'data', m: moment() });
+      logger.warn('Logging warning');
+      logger.warn('Logging warning w/ meta', { extra: 'data', m: moment() });
+      logger.error('Logging error');
+      logger.error('Logging error w/ meta', { extra: 'data', m: moment() });
+
       return res;
     },
+
     assign(m, res) {
       m.value = res;
     }

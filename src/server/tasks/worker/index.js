@@ -1,6 +1,37 @@
 const moment = require('moment')
+const util = require('util')
 const {configTimerSeconds} = require('../../lib/utils')
 const {TaskMachine} = require('@dendra-science/task-machine')
+
+/*
+  HACK: Winston custom loggers are a pain in 2.x - make a custom one!
+ */
+class AgentLogger {
+  constructor (logger, key) {
+    this.inspectOpts = {
+      depth: 16,
+      maxArrayLength: 200,
+      breakLength: Infinity
+    }
+    this.logger = logger
+    this.key = key
+  }
+
+  info (msg, meta) {
+    const pre = `Agent [${this.key}]: ${msg}`
+    this.logger.info(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`)
+  }
+
+  error (msg, meta) {
+    const pre = `Agent [${this.key}]: ${msg}`
+    this.logger.error(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`)
+  }
+
+  warn (msg, meta) {
+    const pre = `Agent [${this.key}]: ${msg}`
+    this.logger.warn(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`)
+  }
+}
 
 module.exports = (function () {
   return function () {
@@ -13,25 +44,52 @@ module.exports = (function () {
        */
 
       const config = tasks.worker
-      const taskMachines = config.taskMachines || {}
+      const agents = config.agents || {}
 
-      // Create TaskMachine instances based on config
-      Object.keys(taskMachines).forEach(key => {
-        const taskMachine = taskMachines[key]
-        const tasksModule = require(taskMachine.module)
-        const tasksMember = tasksModule[taskMachine.member || 'default'] || tasksModule
+      // Create TaskMachine instances (i.e. agents) based on config
+      Object.keys(agents).forEach(key => {
+        const agent = agents[key]
+        const agentModule = require(agent.module)
+        const agentTasks = agentModule[agent.member || 'default'] || agentModule
 
-        taskMachine.finishedAt = moment()
-        taskMachine.machine = new TaskMachine({
-          $app: app,
-          key: key,
-          private: {},
-          props: Object.assign({}, taskMachine.props),
+        const model = {
           state: {}
-        }, tasksMember, taskMachine.options)
+        }
+
+        Object.defineProperty(model, '$app', {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: app
+        })
+        Object.defineProperty(model, 'key', {
+          enumerable: true,
+          configurable: false,
+          writable: false,
+          value: key
+        })
+        Object.defineProperty(model, 'private', {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: {}
+        })
+        Object.defineProperty(model, 'props', {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: Object.assign({}, agent.props)
+        })
+
+        agent.finishedAt = moment()
+        agent.machine = new TaskMachine(model, agentTasks, Object.assign({}, agent.options, {
+          helpers: {
+            logger: new AgentLogger(app.logger, key)
+          }
+        }))
       })
 
-      app.set('taskMachines', taskMachines)
+      app.set('agents', agents)
 
       const handleError = function (err) {
         app.logger.error(err)
@@ -47,24 +105,24 @@ module.exports = (function () {
 
           const docService = app.service('/state/docs')
 
-          Object.keys(taskMachines).forEach(key => {
-            const taskMachine = taskMachines[key]
-            const currentDocId = `taskMachine-${key}-current`
-            const defaultDocId = `taskMachine-${key}-default`
-            const afterSeconds = taskMachine.afterSeconds || 600
+          Object.keys(agents).forEach(key => {
+            const agent = agents[key]
+            const currentDocId = `agent-${key}-current`
+            const defaultDocId = `agent-${key}-default`
+            const afterSeconds = agent.afterSeconds || 600
 
-            if (taskMachine.isProcessing || (moment().diff(taskMachine.finishedAt, 's') < afterSeconds)) {
-              app.logger.info(`Task [worker]: Skipping machine '${key}'`)
+            if (agent.isProcessing || (moment().diff(agent.finishedAt, 's') < afterSeconds)) {
+              app.logger.info(`Task [worker]: Skipping agent '${key}'`)
               return
             }
 
-            taskMachine.isProcessing = true
+            agent.isProcessing = true
 
-            app.logger.info(`Task [worker]: Getting current state for machine '${key}'`)
+            app.logger.info(`Task [worker]: Getting current state for agent '${key}'`)
             docService.get(currentDocId).catch(err => {
               if (err.code !== 404) throw err
 
-              app.logger.info(`Task [worker]: Getting default state for machine '${key}'`)
+              app.logger.info(`Task [worker]: Getting default state for agent '${key}'`)
               return docService.get(defaultDocId).then(doc => {
                 return docService.create(Object.assign(doc, {
                   _id: currentDocId
@@ -73,25 +131,25 @@ module.exports = (function () {
             }).catch(err => {
               if (err.code !== 404) throw err
 
-              app.logger.info(`Task [worker]: Using existing state for machine '${key}'`)
-              return docService.create(Object.assign(taskMachine.machine.model.state, {
+              app.logger.info(`Task [worker]: Using existing state for agent '${key}'`)
+              return docService.create(Object.assign(agent.machine.model.state, {
                 _id: currentDocId
               }))
             }).then(doc => {
               // Restore state before running
-              taskMachine.machine.model.state = doc
-              taskMachine.machine.model.scratch = {}
+              agent.machine.model.state = doc
+              agent.machine.model.scratch = {}
 
-              app.logger.info(`Task [worker]: Starting machine '${key}'`)
-              return taskMachine.machine.clear().start()
+              app.logger.info(`Task [worker]: Starting agent '${key}'`)
+              return agent.machine.clear().start()
             }).then(success => {
               // Preserve state after running
-              app.logger.info(`Task [worker]: Updating current state for machine '${key}'`)
-              return docService.update(currentDocId, taskMachine.machine.model.state)
+              app.logger.info(`Task [worker]: Updating current state for agent '${key}'`)
+              return docService.update(currentDocId, agent.machine.model.state)
             }).catch(handleError).then(() => {
-              delete taskMachine.machine.model.scratch
-              taskMachine.isProcessing = false
-              taskMachine.finishedAt = moment()
+              delete agent.machine.model.scratch
+              agent.isProcessing = false
+              agent.finishedAt = moment()
             })
           })
 

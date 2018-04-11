@@ -7,7 +7,7 @@
   "tasks": {
     "cache_grooming": null,
     "worker": {
-      "taskMachines": {
+      "agents": {
         "test": {
           "afterSeconds": 2,
           "module": "../dist/server/lib/testTasks",
