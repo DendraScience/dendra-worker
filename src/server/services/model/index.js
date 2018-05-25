@@ -11,14 +11,14 @@ class Service {
     this.app = app
   }
 
-  _taskMachines () {
-    return this.app.get('taskMachines') || {}
+  _agents () {
+    return this.app.get('agents') || {}
   }
 
   find (params, callback) {
-    const taskMachines = this._taskMachines()
-    const values = Object.keys(taskMachines).map(key => {
-      return Object.assign({}, taskMachines[key].machine.model)
+    const agents = this._agents()
+    const values = Object.keys(agents).map(key => {
+      return Object.assign({}, agents[key].machine.model)
     })
     callback(null, {
       total: values.length,
@@ -27,12 +27,12 @@ class Service {
   }
 
   _get (id) {
-    const taskMachine = this._taskMachines()[id]
+    const agent = this._agents()[id]
     return new Promise((resolve, reject) => {
-      if (!taskMachine) {
+      if (!agent) {
         reject(new errors.NotFound(`No record found for id '${id}'`))
       } else {
-        resolve(Object.assign({}, taskMachine.machine.model))
+        resolve(Object.assign({}, agent.machine.model))
       }
     })
   }
