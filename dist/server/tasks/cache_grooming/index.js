@@ -50,17 +50,18 @@ module.exports = function () {
               }));
             }
             app.logger.info('Task [cache_grooming]: No cache docs found');
-          }).catch(handleError).then(ret => {
-            if (!ret) return;
+            // DEPRECATED: Now using autocompactionInterval in config
+            // }).catch(handleError).then((ret) => {
+            //   if (!ret) return
 
-            // Compact database if docs were removed
-            const databases = app.get('databases');
-            if (databases.nedb && databases.nedb.cache) {
-              return Promise.resolve(databases.nedb.cache.db).then(db => {
-                app.logger.info('Task [cache_grooming]: Queuing cache docs compaction');
-                db.docs.persistence.compactDatafile();
-              });
-            }
+            //   // Compact database if docs were removed
+            //   const databases = app.get('databases')
+            //   if (databases.nedb && databases.nedb.cache) {
+            //     return Promise.resolve(databases.nedb.cache.db).then(db => {
+            //       app.logger.info('Task [cache_grooming]: Queuing cache docs compaction')
+            //       db.docs.persistence.compactDatafile()
+            //     })
+            //   }
           }).catch(handleError).then(scheduleTask);
         }, timerSeconds * 1000);
       };
