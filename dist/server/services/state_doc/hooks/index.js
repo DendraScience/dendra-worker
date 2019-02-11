@@ -12,12 +12,9 @@ exports.before = {
 
   create: [apiHooks.timestamp()],
 
-  update: [apiHooks.timestamp(), hook => {
-    // TODO: Optimize with find/$select to return fewer fields?
-    return hook.app.service('/state/docs').get(hook.id).then(doc => {
-      hook.data.created_at = doc.created_at;
-      return hook;
-    });
+  update: [apiHooks.timestamp(), async context => {
+    const doc = await context.app.service('/state/docs').get(context.id);
+    context.data.created_at = doc.created_at;
   }],
 
   patch: disallow('rest')

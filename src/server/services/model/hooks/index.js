@@ -1,4 +1,4 @@
-const {discard, disallow} = require('feathers-hooks-common')
+const { discard, disallow } = require('feathers-hooks-common')
 
 exports.before = {
   // all: [],

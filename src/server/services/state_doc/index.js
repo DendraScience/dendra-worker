@@ -1,25 +1,20 @@
 const service = require('feathers-nedb')
 const hooks = require('./hooks')
 
-module.exports = (function () {
-  return function () {
-    const app = this
-    const databases = app.get('databases')
+module.exports = function (app) {
+  const databases = app.get('databases')
 
-    if (databases.nedb && databases.nedb.state) {
-      app.set('serviceReady',
-        Promise.resolve(databases.nedb.state.db).then(db => {
-          app.use('/state/docs', service({
-            Model: db.docs,
-            paginate: databases.nedb.state.paginate
-          }))
+  if (!(databases.nedb && databases.nedb.state)) return
 
-          // Get the wrapped service object, bind hooks
-          const docService = app.service('/state/docs')
+  const { db, paginate } = databases.nedb.state
 
-          docService.before(hooks.before)
-          docService.after(hooks.after)
-        }))
-    }
-  }
-})()
+  app.use('/state/docs', service({
+    Model: db.docs,
+    paginate
+  }))
+
+  // Get the wrapped service object, bind hooks
+  const docService = app.service('/state/docs')
+
+  docService.hooks(hooks)
+}

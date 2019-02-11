@@ -1,5 +1,5 @@
 const apiHooks = require('@dendra-science/api-hooks-common')
-const {disallow} = require('feathers-hooks-common')
+const { disallow } = require('feathers-hooks-common')
 
 exports.before = {
   // all: [],

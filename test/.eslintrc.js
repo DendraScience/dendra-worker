@@ -7,8 +7,12 @@ module.exports = {
   extends: 'standard',
   globals: {
     assert: true,
+    baseUrl: true,
     expect: true,
-    main: true
+    guest: true,
+    helper: true,
+    app: true,
+    path: true
   },
   root: true,
   parserOptions: {

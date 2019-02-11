@@ -21,18 +21,18 @@ export default {
     execute (m) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve({some: 'data'})
+          resolve({ some: 'data' })
         }, 200)
       })
     },
 
-    afterExecute (m, res, {logger}) {
+    afterExecute (m, res, { logger }) {
       logger.info('Logging info')
-      logger.info('Logging info w/ meta', {extra: 'data', m: moment()})
+      logger.info('Logging info w/ meta', { extra: 'data', m: moment() })
       logger.warn('Logging warning')
-      logger.warn('Logging warning w/ meta', {extra: 'data', m: moment()})
+      logger.warn('Logging warning w/ meta', { extra: 'data', m: moment() })
       logger.error('Logging error')
-      logger.error('Logging error w/ meta', {extra: 'data', m: moment()})
+      logger.error('Logging error w/ meta', { extra: 'data', m: moment() })
 
       return res
     },

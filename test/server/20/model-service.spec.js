@@ -12,7 +12,7 @@ describe('Service /models', function () {
 
   describe('#get()', function () {
     it('should get without error', function () {
-      return main.app.service('/models').get('test').then(doc => {
+      return app.service('/models').get('test').then(doc => {
         expect(doc).to.have.nested.property('key', 'test')
         expect(doc).to.not.have.nested.property('props.hello', 'world')
         expect(doc).to.have.nested.property('state._id', 'agent-test-current')
@@ -25,7 +25,7 @@ describe('Service /models', function () {
 
   describe('#find()', function () {
     it('should find without error', function () {
-      return main.app.service('/models').find().then(res => {
+      return app.service('/models').find().then(res => {
         expect(res).to.have.nested.property('data.0.key', 'test')
         expect(res).to.not.have.nested.property('data.0.props.hello', 'world')
         expect(res).to.have.nested.property('data.0.state._id', 'agent-test-current')
