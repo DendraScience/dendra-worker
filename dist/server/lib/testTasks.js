@@ -1,8 +1,10 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
+
 /**
  * Built-in tasks for testing after installation.
  *
@@ -10,10 +12,9 @@ Object.defineProperty(exports, "__esModule", {
  * @license BSD-2-Clause-FreeBSD
  * @module lib/testTasks
  */
-
 const moment = require('moment');
 
-exports.default = {
+var _default = {
   a: {
     clear(m) {
       m.value = null;
@@ -26,24 +27,38 @@ exports.default = {
     execute(m) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve({ some: 'data' });
+          resolve({
+            some: 'data'
+          });
         }, 200);
       });
     },
 
-    afterExecute(m, res, { logger }) {
+    afterExecute(m, res, {
+      logger
+    }) {
       logger.info('Logging info');
-      logger.info('Logging info w/ meta', { extra: 'data', m: moment() });
+      logger.info('Logging info w/ meta', {
+        extra: 'data',
+        m: moment()
+      });
       logger.warn('Logging warning');
-      logger.warn('Logging warning w/ meta', { extra: 'data', m: moment() });
+      logger.warn('Logging warning w/ meta', {
+        extra: 'data',
+        m: moment()
+      });
       logger.error('Logging error');
-      logger.error('Logging error w/ meta', { extra: 'data', m: moment() });
-
+      logger.error('Logging error w/ meta', {
+        extra: 'data',
+        m: moment()
+      });
       return res;
     },
 
     assign(m, res) {
       m.value = res;
     }
+
   }
 };
+exports.default = _default;

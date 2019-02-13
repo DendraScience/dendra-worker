@@ -1,9 +1,10 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.configTimerSeconds = configTimerSeconds;
+
 /**
  * Worker utilities and helpers.
  *
@@ -11,10 +12,11 @@ exports.configTimerSeconds = configTimerSeconds;
  * @license BSD-2-Clause-FreeBSD
  * @module lib/utils
  */
-
 const random = require('lodash/random');
 
-function configTimerSeconds({ timerSeconds }) {
+function configTimerSeconds({
+  timerSeconds
+}) {
   let s = 60;
 
   if (typeof timerSeconds === 'number') {

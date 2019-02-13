@@ -1,15 +1,22 @@
-'use strict';
+"use strict";
 
 const moment = require('moment');
+
 const util = require('util');
-const { configTimerSeconds } = require('../../lib/utils');
-const { TaskMachine } = require('@dendra-science/task-machine');
+
+const {
+  configTimerSeconds
+} = require('../../lib/utils');
+
+const {
+  TaskMachine
+} = require('@dendra-science/task-machine');
 
 const TASK_NAME = 'worker';
-
 /*
   HACK: Winston custom loggers are a pain in 2.x - make a custom one!
  */
+
 class AgentLogger {
   constructor(logger, key) {
     this.inspectOpts = {
@@ -35,29 +42,28 @@ class AgentLogger {
     const pre = `Agent [${this.key}]: ${msg}`;
     this.logger.warn(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`);
   }
+
 }
 
 module.exports = function (app) {
-  const { logger } = app;
+  const {
+    logger
+  } = app;
   const tasks = app.get('tasks') || {};
-
   const config = tasks[TASK_NAME];
-
   if (!config) return;
-
   const agents = config.agents || {};
-  const agentsKeys = Object.keys(agents);
+  const agentsKeys = Object.keys(agents); // Create TaskMachine instances (i.e. agents) based on config
 
-  // Create TaskMachine instances (i.e. agents) based on config
   agentsKeys.forEach(key => {
     const agent = agents[key];
-    const agentModule = require(agent.module);
-    const agentTasks = agentModule[agent.member || 'default'] || agentModule;
 
+    const agentModule = require(agent.module);
+
+    const agentTasks = agentModule[agent.member || 'default'] || agentModule;
     const model = {
       state: {}
     };
-
     Object.defineProperty(model, '$app', {
       enumerable: false,
       configurable: false,
@@ -82,7 +88,6 @@ module.exports = function (app) {
       writable: false,
       value: Object.assign({}, agent.props)
     });
-
     agent.finishedAt = moment();
     agent.machine = new TaskMachine(model, agentTasks, Object.assign({}, agent.options, {
       helpers: {
@@ -90,7 +95,6 @@ module.exports = function (app) {
       }
     }));
   });
-
   app.set('agents', agents);
 
   const handleError = err => {
@@ -112,8 +116,8 @@ module.exports = function (app) {
 
     try {
       let doc;
-
       logger.info(`Task [${TASK_NAME}]: Getting current state for agent '${key}'`);
+
       try {
         doc = await docService.get(currentDocId);
       } catch (err2) {
@@ -122,6 +126,7 @@ module.exports = function (app) {
 
       if (!doc) {
         logger.info(`Task [${TASK_NAME}]: Getting default state for agent '${key}'`);
+
         try {
           doc = await docService.get(defaultDocId);
           doc = await docService.create(Object.assign(doc, {
@@ -137,16 +142,14 @@ module.exports = function (app) {
         doc = await docService.create(Object.assign(agent.machine.model.state, {
           _id: currentDocId
         }));
-      }
+      } // Restore state before running
 
-      // Restore state before running
+
       agent.machine.model.state = doc;
       agent.machine.model.scratch = {};
-
       logger.info(`Task [${TASK_NAME}]: Starting agent '${key}'`);
-      await agent.machine.clear().start();
+      await agent.machine.clear().start(); // Preserve state after running
 
-      // Preserve state after running
       logger.info(`Task [${TASK_NAME}]: Updating current state for agent '${key}'`);
       await docService.update(currentDocId, agent.machine.model.state);
     } catch (err) {
@@ -159,17 +162,14 @@ module.exports = function (app) {
   };
 
   const runTask = async () => {
-    logger.info(`Task [${TASK_NAME}]: Running...`);
+    logger.info(`Task [${TASK_NAME}]: Running...`); // NOTE: Agents run in parallel
 
-    // NOTE: Agents run in parallel
     agentsKeys.forEach(key => startAgent(agents[key], key));
   };
 
   const scheduleTask = () => {
     const timerSeconds = configTimerSeconds(config);
-
     logger.info(`Task [${TASK_NAME}]: Starting in ${timerSeconds} seconds`);
-
     config.tid = setTimeout(() => {
       runTask().catch(handleError).then(scheduleTask);
     }, timerSeconds * 1000);

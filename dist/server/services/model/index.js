@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
 const errors = require('@feathersjs/errors');
+
 const hooks = require('./hooks');
 
 class Service {
@@ -14,10 +15,10 @@ class Service {
 
   find(params) {
     const agents = this._agents();
+
     const values = Object.keys(agents).map(key => {
       return Object.assign({}, agents[key].machine.model);
     });
-
     return Promise.resolve({
       total: values.length,
       data: values
@@ -35,13 +36,12 @@ class Service {
       }
     });
   }
+
 }
 
 module.exports = function (app) {
-  app.use('/models', new Service());
+  app.use('/models', new Service()); // Get the wrapped service object, bind hooks
 
-  // Get the wrapped service object, bind hooks
   const modelService = app.service('/models');
-
   modelService.hooks(hooks);
 };
