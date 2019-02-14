@@ -8,7 +8,7 @@
 
 const random = require('lodash/random')
 
-export function configTimerSeconds ({ timerSeconds }) {
+function configTimerSeconds ({ timerSeconds }) {
   let s = 60
 
   if (typeof timerSeconds === 'number') {
@@ -18,4 +18,8 @@ export function configTimerSeconds ({ timerSeconds }) {
   }
 
   return s
+}
+
+module.exports = {
+  configTimerSeconds
 }

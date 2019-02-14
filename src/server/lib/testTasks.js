@@ -8,7 +8,7 @@
 
 const moment = require('moment')
 
-export default {
+module.exports = {
   a: {
     clear (m) {
       m.value = null

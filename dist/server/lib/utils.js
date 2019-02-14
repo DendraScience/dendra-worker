@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.configTimerSeconds = configTimerSeconds;
-
 /**
  * Worker utilities and helpers.
  *
@@ -27,3 +22,7 @@ function configTimerSeconds({
 
   return s;
 }
+
+module.exports = {
+  configTimerSeconds
+};

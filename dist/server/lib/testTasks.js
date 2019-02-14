@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
 /**
  * Built-in tasks for testing after installation.
  *
@@ -14,7 +9,7 @@ exports.default = void 0;
  */
 const moment = require('moment');
 
-var _default = {
+module.exports = {
   a: {
     clear(m) {
       m.value = null;
@@ -61,4 +56,3 @@ var _default = {
 
   }
 };
-exports.default = _default;
