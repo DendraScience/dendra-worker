@@ -1,11 +1,4 @@
 {
-  "auth": {
-    "idField": "id",
-    "local": {},
-    "token": {
-      "secret": "ThYncCxLbjhin7YZBtZgda7nm0KSeT4rM0UsvpCnJXPA6sTVq6NKvsDoHjzyjkMKnB4gKDqsUx8Gg7mYsRbV9Q=="
-    }
-  },
   "connections": {},
   "databases": {
     "nedb": {
@@ -35,7 +28,10 @@
     "cache_grooming": {
       "docLimit": 20,
       "retentionMinutes": 60,
-      "timerSeconds": [10, 15]
+      "timerSeconds": [
+        10,
+        15
+      ]
     }
   }
 }

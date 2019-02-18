@@ -14,7 +14,7 @@ module.exports = function (app) {
     connection.app = feathers()
       .configure(restClient(connection.url).request(request))
 
-    if (connection.email && connection.password) {
+    if (connection.authenticate) {
       const storageKey = connection.storageKey = murmurHash3.x86.hash128(connection.url)
       connection.app.configure(auth({
         storage: localStorage,

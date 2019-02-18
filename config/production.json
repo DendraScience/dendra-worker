@@ -24,7 +24,10 @@
     "cache_grooming": {
       "docLimit": 100,
       "retentionMinutes": 60,
-      "timerSeconds": [300, 420]
+      "timerSeconds": [
+        300,
+        420
+      ]
     }
   }
 }
