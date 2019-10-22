@@ -8,12 +8,12 @@ const {
 
 exports.before = {
   // all: [],
-  find: [apiHooks.coerceQuery()],
+  find: apiHooks.coerceQuery(),
   // get: [],
-  create: [disallow('rest'), apiHooks.timestamp()],
-  update: [disallow('rest'), apiHooks.timestamp()],
-  patch: disallow('rest'),
-  remove: disallow('rest')
+  create: [disallow('rest'), apiHooks.timestamp(), apiHooks.coerce()],
+  update: [disallow('rest'), apiHooks.timestamp(), apiHooks.coerce()],
+  patch: [disallow('rest'), apiHooks.coerceQuery(), apiHooks.coerce()],
+  remove: [disallow('rest'), apiHooks.coerceQuery()]
 };
 exports.after = {// all: [],
   // find: [],

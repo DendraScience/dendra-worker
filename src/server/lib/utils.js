@@ -8,7 +8,10 @@
 
 const random = require('lodash/random')
 
-function configTimerSeconds ({ timerSeconds }) {
+/**
+ * Returns a timer interval given configured values.
+ */
+function configTimerSeconds({ timerSeconds }) {
   let s = 60
 
   if (typeof timerSeconds === 'number') {

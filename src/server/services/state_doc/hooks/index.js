@@ -4,18 +4,15 @@ const { disallow } = require('feathers-hooks-common')
 exports.before = {
   // all: [],
 
-  find: [
-    apiHooks.coerceQuery()
-  ],
+  find: apiHooks.coerceQuery(),
 
   // get: [],
 
-  create: [
-    apiHooks.timestamp()
-  ],
+  create: [apiHooks.timestamp(), apiHooks.coerce()],
 
   update: [
     apiHooks.timestamp(),
+    apiHooks.coerce(),
 
     async context => {
       const doc = await context.app.service('/state/docs').get(context.id)
@@ -23,9 +20,9 @@ exports.before = {
     }
   ],
 
-  patch: disallow('rest')
+  patch: [disallow('rest'), apiHooks.coerceQuery(), apiHooks.coerce()],
 
-  // remove: []
+  remove: apiHooks.coerceQuery()
 }
 
 exports.after = {

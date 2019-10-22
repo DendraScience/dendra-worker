@@ -10,15 +10,15 @@ const moment = require('moment')
 
 module.exports = {
   a: {
-    clear (m) {
+    clear(m) {
       m.value = null
     },
 
-    guard (m) {
+    guard(m) {
       return !m.value
     },
 
-    execute (m) {
+    execute(m) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve({ some: 'data' })
@@ -26,7 +26,7 @@ module.exports = {
       })
     },
 
-    afterExecute (m, res, { logger }) {
+    afterExecute(m, res, { logger }) {
       logger.info('Logging info')
       logger.info('Logging info w/ meta', { extra: 'data', m: moment() })
       logger.warn('Logging warning')
@@ -37,7 +37,7 @@ module.exports = {
       return res
     },
 
-    assign (m, res) {
+    assign(m, res) {
       m.value = res
     }
   }

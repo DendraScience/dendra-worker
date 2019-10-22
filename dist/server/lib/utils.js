@@ -8,6 +8,10 @@
  * @module lib/utils
  */
 const random = require('lodash/random');
+/**
+ * Returns a timer interval given configured values.
+ */
+
 
 function configTimerSeconds({
   timerSeconds

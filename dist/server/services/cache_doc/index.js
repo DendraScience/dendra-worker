@@ -8,14 +8,16 @@ module.exports = function (app) {
   const databases = app.get('databases');
   if (!(databases.nedb && databases.nedb.cache)) return;
   const {
-    db,
-    paginate
-  } = databases.nedb.cache;
-  app.use('/cache/docs', service({
+    cache
+  } = databases.nedb;
+  const {
+    db
+  } = cache;
+  const nedbService = service({
     Model: db.docs,
-    paginate
-  })); // Get the wrapped service object, bind hooks
+    paginate: cache.paginate
+  });
+  app.use('/cache/docs', nedbService); // Get the wrapped service object, bind hooks
 
-  const docService = app.service('/cache/docs');
-  docService.hooks(hooks);
+  app.service('cache/docs').hooks(hooks);
 };

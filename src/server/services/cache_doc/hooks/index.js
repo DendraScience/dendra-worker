@@ -4,24 +4,17 @@ const { disallow } = require('feathers-hooks-common')
 exports.before = {
   // all: [],
 
-  find: [
-    apiHooks.coerceQuery()
-  ],
+  find: apiHooks.coerceQuery(),
 
   // get: [],
 
-  create: [
-    disallow('rest'),
-    apiHooks.timestamp()
-  ],
+  create: [disallow('rest'), apiHooks.timestamp(), apiHooks.coerce()],
 
-  update: [
-    disallow('rest'),
-    apiHooks.timestamp()
-  ],
+  update: [disallow('rest'), apiHooks.timestamp(), apiHooks.coerce()],
 
-  patch: disallow('rest'),
-  remove: disallow('rest')
+  patch: [disallow('rest'), apiHooks.coerceQuery(), apiHooks.coerce()],
+
+  remove: [disallow('rest'), apiHooks.coerceQuery()]
 }
 
 exports.after = {

@@ -1,10 +1,18 @@
 // SEE: http://eslint.org/docs/user-guide/configuring
 module.exports = {
+  root: true,
   env: {
-    'mocha': true,
-    'node': true
+    mocha: true,
+    node: true
   },
-  extends: 'standard',
+  extends: ['standard', 'prettier', 'prettier/standard'],
+  plugins: ['import', 'prettier', 'standard'],
+  parserOptions: {
+    sourceType: 'module'
+  },
+  rules: {
+    'prettier/prettier': 'error'
+  },
   globals: {
     assert: true,
     baseUrl: true,
@@ -13,9 +21,5 @@ module.exports = {
     helper: true,
     app: true,
     path: true
-  },
-  root: true,
-  parserOptions: {
-    sourceType: 'module'
   }
 }

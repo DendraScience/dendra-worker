@@ -21,7 +21,7 @@ const middleware = require('./middleware')
 const services = require('./services')
 const tasks = require('./tasks')
 
-module.exports = async (logger) => {
+module.exports = async logger => {
   const app = express(feathers())
 
   app.logger = logger

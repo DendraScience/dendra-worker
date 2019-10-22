@@ -3,29 +3,35 @@ const { configTimerSeconds } = require('../../lib/utils')
 
 const TASK_NAME = 'cache_grooming'
 
-module.exports = function (app) {
+module.exports = function(app) {
   const { logger } = app
   const tasks = app.get('tasks') || {}
 
   const config = tasks[TASK_NAME]
 
-  if (!(
-    config
-  )) return
+  if (!config) return
 
-  const docLimit = (typeof config.docLimit === 'number') ? config.docLimit : 20
-  const retentionMinutes = (typeof config.retentionMinutes === 'number') ? config.retentionMinutes : 60
+  const docLimit = typeof config.docLimit === 'number' ? config.docLimit : 20
+  const retentionMinutes =
+    typeof config.retentionMinutes === 'number' ? config.retentionMinutes : 60
 
-  const handleError = (err) => {
+  const handleError = err => {
     logger.error(err)
   }
 
-  const processDocs = async (now) => {
+  const processDocs = async now => {
     const service = app.service('/cache/docs')
     const query = {
       $or: [
         { updated_at: { $exists: false } },
-        { updated_at: { $lt: moment().utc().subtract(retentionMinutes, 'm').toISOString() } }
+        {
+          updated_at: {
+            $lt: moment()
+              .utc()
+              .subtract(retentionMinutes, 'm')
+              .toISOString()
+          }
+        }
       ],
       $limit: docLimit,
       $sort: {
@@ -60,7 +66,9 @@ module.exports = function (app) {
     logger.info(`Task [${TASK_NAME}]: Starting in ${timerSeconds} seconds`)
 
     config.tid = setTimeout(() => {
-      runTask().catch(handleError).then(scheduleTask)
+      runTask()
+        .catch(handleError)
+        .then(scheduleTask)
     }, timerSeconds * 1000)
   }
 

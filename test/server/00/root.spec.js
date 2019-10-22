@@ -9,7 +9,7 @@ const log = console
 
 let server
 
-before(async function () {
+before(async function() {
   app = await app(log)
 
   const host = app.get('host')
@@ -31,11 +31,10 @@ before(async function () {
     Configure user connections
    */
 
-  global.guest = feathers()
-    .configure(restClient(baseUrl).request(request))
+  global.guest = feathers().configure(restClient(baseUrl).request(request))
 })
 
-after(async function () {
+after(async function() {
   this.timeout(120000)
 
   const tasks = app.get('tasks')
@@ -51,6 +50,8 @@ after(async function () {
   nedb.cache.db.docs.persistence.stopAutocompaction()
   nedb.state.db.docs.persistence.stopAutocompaction()
 
-  await new Promise((resolve, reject) => server.close(err => err ? reject(err) : resolve()))
+  await new Promise((resolve, reject) =>
+    server.close(err => (err ? reject(err) : resolve()))
+  )
   server.unref()
 })

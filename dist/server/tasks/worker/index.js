@@ -2,7 +2,7 @@
 
 const moment = require('moment');
 
-const util = require('util');
+const os = require('os');
 
 const {
   configTimerSeconds
@@ -13,34 +13,23 @@ const {
 } = require('@dendra-science/task-machine');
 
 const TASK_NAME = 'worker';
-/*
-  HACK: Winston custom loggers are a pain in 2.x - make a custom one!
- */
 
 class AgentLogger {
   constructor(logger, key) {
-    this.inspectOpts = {
-      depth: 16,
-      maxArrayLength: 200,
-      breakLength: Infinity
-    };
     this.logger = logger;
     this.key = key;
   }
 
-  info(msg, meta) {
-    const pre = `Agent [${this.key}]: ${msg}`;
-    this.logger.info(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`);
+  info(msg, ...meta) {
+    this.logger.info(`Agent [${this.key}]: ${msg}`, ...meta);
   }
 
-  error(msg, meta) {
-    const pre = `Agent [${this.key}]: ${msg}`;
-    this.logger.error(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`);
+  error(msg, ...meta) {
+    this.logger.error(`Agent [${this.key}]: ${msg}`, ...meta);
   }
 
-  warn(msg, meta) {
-    const pre = `Agent [${this.key}]: ${msg}`;
-    this.logger.warn(typeof meta === 'undefined' ? pre : `${pre} | ${util.inspect(meta, this.inspectOpts)}`);
+  warn(msg, ...meta) {
+    this.logger.warn(`Agent [${this.key}]: ${msg}`, ...meta);
   }
 
 }
@@ -53,7 +42,9 @@ module.exports = function (app) {
   const config = tasks[TASK_NAME];
   if (!config) return;
   const agents = config.agents || {};
-  const agentsKeys = Object.keys(agents); // Create TaskMachine instances (i.e. agents) based on config
+  const agentsKeys = Object.keys(agents);
+  const hostname = os.hostname();
+  const hostParts = hostname.split('-'); // Create TaskMachine instances (i.e. agents) based on config
 
   agentsKeys.forEach(key => {
     const agent = agents[key];
@@ -69,6 +60,18 @@ module.exports = function (app) {
       configurable: false,
       writable: false,
       value: app
+    });
+    Object.defineProperty(model, 'hostname', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: hostname
+    });
+    Object.defineProperty(model, 'hostOrdinal', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: hostParts[hostParts.length - 1]
     });
     Object.defineProperty(model, 'key', {
       enumerable: true,
