@@ -2,10 +2,9 @@
 
 A generic worker service for performing recurring tasks, such as data loading.
 
-
 ## Instructions
 
-1. Be sure you have Node version 10.15.1. If you’re using nvm, you may need to `nvm use 10.15.1`.
+1. Be sure you have Node version 12.14.x. If you’re using nvm, you may need to `nvm use 12.14`.
 
 2. Clone this repo.
 
@@ -14,7 +13,6 @@ A generic worker service for performing recurring tasks, such as data loading.
 4. Install modules via `npm install`.
 
 5. If all goes well, you should be able to run the predefined package scripts.
-
 
 ## To build and publish the Docker image
 

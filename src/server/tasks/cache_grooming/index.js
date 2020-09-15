@@ -3,7 +3,7 @@ const { configTimerSeconds } = require('../../lib/utils')
 
 const TASK_NAME = 'cache_grooming'
 
-module.exports = function(app) {
+module.exports = function (app) {
   const { logger } = app
   const tasks = app.get('tasks') || {}
 
@@ -26,10 +26,7 @@ module.exports = function(app) {
         { updated_at: { $exists: false } },
         {
           updated_at: {
-            $lt: moment()
-              .utc()
-              .subtract(retentionMinutes, 'm')
-              .toISOString()
+            $lt: moment().utc().subtract(retentionMinutes, 'm').toISOString()
           }
         }
       ],
@@ -46,7 +43,7 @@ module.exports = function(app) {
       return
     }
 
-    for (let doc of res.data) {
+    for (const doc of res.data) {
       logger.info(`Task [${TASK_NAME}]: Removing cache doc ${doc._id}`)
       await service.remove(doc._id)
     }
@@ -66,9 +63,7 @@ module.exports = function(app) {
     logger.info(`Task [${TASK_NAME}]: Starting in ${timerSeconds} seconds`)
 
     config.tid = setTimeout(() => {
-      runTask()
-        .catch(handleError)
-        .then(scheduleTask)
+      runTask().catch(handleError).then(scheduleTask)
     }, timerSeconds * 1000)
   }
 

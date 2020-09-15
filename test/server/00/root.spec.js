@@ -9,7 +9,7 @@ const log = console
 
 let server
 
-before(async function() {
+before(async function () {
   app = await app(log)
 
   const host = app.get('host')
@@ -34,7 +34,7 @@ before(async function() {
   global.guest = feathers().configure(restClient(baseUrl).request(request))
 })
 
-after(async function() {
+after(async function () {
   this.timeout(120000)
 
   const tasks = app.get('tasks')

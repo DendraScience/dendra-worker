@@ -49,7 +49,7 @@ module.exports = function (app) {
       return;
     }
 
-    for (let doc of res.data) {
+    for (const doc of res.data) {
       logger.info(`Task [${TASK_NAME}]: Removing cache doc ${doc._id}`);
       await service.remove(doc._id);
     }

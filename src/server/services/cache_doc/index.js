@@ -1,7 +1,7 @@
 const service = require('feathers-nedb')
 const hooks = require('./hooks')
 
-module.exports = function(app) {
+module.exports = function (app) {
   const databases = app.get('databases')
 
   if (!(databases.nedb && databases.nedb.cache)) return

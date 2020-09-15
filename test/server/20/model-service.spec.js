@@ -2,16 +2,16 @@
  * Tests for series service
  */
 
-describe('Service /models', function() {
+describe('Service /models', function () {
   this.timeout(60000)
 
-  before(function() {
+  before(function () {
     // Wait for task to run
     return new Promise(resolve => setTimeout(resolve, 7000))
   })
 
-  describe('#get()', function() {
-    it('should get without error', function() {
+  describe('#get()', function () {
+    it('should get without error', function () {
       return app
         .service('/models')
         .get('test')
@@ -26,8 +26,8 @@ describe('Service /models', function() {
     })
   })
 
-  describe('#find()', function() {
-    it('should find without error', function() {
+  describe('#find()', function () {
+    it('should find without error', function () {
       return app
         .service('/models')
         .find()
