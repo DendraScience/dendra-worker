@@ -40,6 +40,9 @@ module.exports = function(app) {
   // Create TaskMachine instances (i.e. agents) based on config
   agentsKeys.forEach(key => {
     const agent = agents[key]
+
+    logger.info(`Task [${TASK_NAME}]: Loading agent module '${agent.module}'`)
+
     const agentModule = require(agent.module)
     const agentTasks = agentModule[agent.member || 'default'] || agentModule
 

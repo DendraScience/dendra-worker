@@ -48,6 +48,7 @@ module.exports = function (app) {
 
   agentsKeys.forEach(key => {
     const agent = agents[key];
+    logger.info(`Task [${TASK_NAME}]: Loading agent module '${agent.module}'`);
 
     const agentModule = require(agent.module);
 
